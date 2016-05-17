@@ -1,21 +1,24 @@
 import React from 'react';
 import { Row, Col, ListGroupItem, FormControl, Button } from 'react-bootstrap';
 import { Bert } from 'meteor/themeteorchef:bert';
-import { updateDocument, removeDocument } from '../../api/documents/methods.js';
+import {
+  updateDocumentAction,
+  removeDocumentAction,
+} from '/imports/ui/redux/actions';
 
 const handleUpdateDocument = (documentId, event) => {
   const title = event.target.value.trim();
   if (title !== '' && event.keyCode === 13) {
-    updateDocument.call({
+    updateDocumentAction({
       _id: documentId,
       update: { title },
-    }, (error) => {
-      if (error) {
-        Bert.alert(error.reason, 'danger');
-      } else {
+      successCb() {
         Bert.alert('Document updated!', 'success');
-      }
-    });
+      },
+      errorCb(error) {
+        Bert.alert(error.reason, 'danger');
+      },
+    })();
   }
 };
 
@@ -25,15 +28,15 @@ const handleRemoveDocument = (documentId, event) => {
   // disable the eslint `no-alert`
   // eslint-disable-next-line no-alert
   if (confirm('Are you sure? This is permanent.')) {
-    removeDocument.call({
+    removeDocumentAction({
       _id: documentId,
-    }, (error) => {
-      if (error) {
-        Bert.alert(error.reason, 'danger');
-      } else {
+      successCb() {
         Bert.alert('Document removed!', 'success');
-      }
-    });
+      },
+      errorCb(error) {
+        Bert.alert(error.reason, 'danger');
+      },
+    })();
   }
 };
 
