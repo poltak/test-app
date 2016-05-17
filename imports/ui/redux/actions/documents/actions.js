@@ -46,3 +46,14 @@ export function removeDocumentAction({ _id, successCb, errorCb }) {
     });
   };
 }
+
+export function setCountAction({ docCount = 0 }) {
+  if (docCount < 0) {
+    return;
+  }
+
+  Store.dispatch({
+    type: actionTypes.DOCUMENT_COUNT_SET,
+    docCount,
+  });
+}
