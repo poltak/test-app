@@ -6,16 +6,20 @@ import { DOCUMENT_COUNT_SET } from '/imports/ui/redux/actions';
 
 Meteor.startup(() => {
   Tracker.autorun(() => {
-    const subscription = Meteor.subscribe('documents');
+    // Make sure this only runs once
+    const state = Store.getState();
+    if (!state.docCount) {
+      const subscription = Meteor.subscribe('documents');
 
-    if (subscription.ready()) {
-      const documents = Documents.find();
-      const docCount = documents.count();
+      if (subscription.ready()) {
+        const documents = Documents.find();
+        const docCount = documents.count();
 
-      Store.dispatch({
-        type: DOCUMENT_COUNT_SET,
-        docCount,
-      });
+        Store.dispatch({
+          type: DOCUMENT_COUNT_SET,
+          docCount,
+        });
+      }
     }
   });
 });
